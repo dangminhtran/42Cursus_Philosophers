@@ -6,7 +6,7 @@
 /*   By: dangtran <dangtran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 12:44:37 by dangtran          #+#    #+#             */
-/*   Updated: 2025/03/22 16:32:14 by dangtran         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:46:09 by dangtran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	init_mutexes(t_data *data)
  * @param argv The arguments
  * @return 0 if success, 1/NULL if error
  */
-int	init_philos(t_data *data, int argc, char **argv)
+int	init_philos(t_data *data)
 {
 	int	i;
 
@@ -42,8 +42,8 @@ int	init_philos(t_data *data, int argc, char **argv)
 		data->philo[i].id = i + 1;
 		data->philo[i].meats_eaten = 0;
 		data->philo[i].is_dead = 0;
-		data->philo[i].left_fork = pthread_mutex_init(sizeof(pthread_mutex_t), NULL);
-		data->philo[i].right_fork = malloc(sizeof(pthread_mutex_t));
+		// data->philo[i].left_fork = malloc(sizeof(pthread_mutex_t));
+		// data->philo[i].right_fork = malloc(sizeof(pthread_mutex_t));
 		data->philo[i].eat = &data->eat;
 		data->philo[i].write = &data->write;
 		data->philo[i].dead = &data->dead;
@@ -88,7 +88,7 @@ int	init_threads(t_data *data)
  */
 int	init_program(t_data *data, int argc, char **argv)
 {
-	if (init_philos(data, argc, argv))
+	if (init_philos(data))
 		return (1);
 	if (init_mutexes(data))
 		return (1);

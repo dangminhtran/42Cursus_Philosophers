@@ -6,7 +6,7 @@
 /*   By: dangtran <dangtran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/22 12:46:37 by dangtran          #+#    #+#             */
-/*   Updated: 2025/03/22 16:26:31 by dangtran         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:44:15 by dangtran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void   print_message(char *message, t_philo *philo, int id)
  * @param philo The philosopher
  * @return void
  */
-void	eat(t_philo *philo)
+void	is_eating(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
 	print_message("has taken a right fork", philo, philo->id);
@@ -59,7 +59,7 @@ void	eat(t_philo *philo)
  * @param philo The philosopher
  * @return void
  */
-void	sleep(t_philo *philo)
+void	is_sleeping(t_philo *philo)
 {
 	printf("%ld %d is sleeping\n", get_time() - philo->start_time, philo->id
 		+ 1);
@@ -71,7 +71,7 @@ void	sleep(t_philo *philo)
  * @param philo The philosopher
  * @return void
  */
-void	think(t_philo *philo)
+void	is_thinking(t_philo *philo)
 {
 	printf("%ld %d is thinking\n", get_time() - philo->start_time, philo->id
 		+ 1);
@@ -89,9 +89,9 @@ void	*routine(void *philo)
 	philo = (t_philo *)philo;
 	while (1)
 	{
-		eat(philo);
-		sleep(philo);
-		think(philo);
+		is_eating(philo);
+		is_sleeping(philo);
+		is_thinking(philo);
 	}
 	return (NULL);
 }

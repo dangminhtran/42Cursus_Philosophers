@@ -6,7 +6,7 @@
 /*   By: dangtran <dangtran@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 13:07:30 by dangtran          #+#    #+#             */
-/*   Updated: 2025/03/22 16:21:43 by dangtran         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:46:20 by dangtran         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,16 @@ int					check_args(char **argv);
 
 /* init.c */
 int					init_mutexes(t_data *data);
-int					init_philos(t_data *data, int argc, char **argv);
+int					init_philos(t_data *data);
 int					init_program(t_data *data, int argc, char **argv);
 int					init_threads(t_data *data);
 
-/* routine.c */
+/* routine.c - MAX */ 
 void				*routine(void *philo);
-void				eat(t_philo *philo);
-void				sleep(t_philo *philo);
-void				think(t_philo *philo);
-
+void				is_eating(t_philo *philo);
+void				is_sleeping(t_philo *philo);
+void				is_thinking(t_philo *philo);
+void				print_message(char *message, t_philo *philo, int id);
 /* check.c */
 int					check_dead(t_philo *philo);
 int					check_eating(t_philo *philo);
