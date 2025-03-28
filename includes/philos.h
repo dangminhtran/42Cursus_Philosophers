@@ -13,6 +13,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <../extras/extras.h>
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -25,18 +26,17 @@ typedef struct s_philo
 {
 	pthread_t		thread;
 	int				id;
-	// TODO - Utile ?
-	int				meats_eaten;
-	int				is_dead;
+	int			meats_eaten;
 	int				nb_philos;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
-	size_t			nb_meals_to_eat;
+	int				nb_meals_to_eat;
 	size_t			start_time;
 	size_t			last_meal;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
+	int				*is_dead;
 	pthread_mutex_t	*eat;
 	pthread_mutex_t	*write;
 	pthread_mutex_t	*dead;
@@ -45,7 +45,9 @@ typedef struct s_philo
 
 typedef struct s_data
 {
-	t_philo			*philo;
+	t_philo			*philos;
+	pthread_mutex_t	forks[PHILO_MAX];
+	int	is_dead;
 	pthread_mutex_t	write;
 	pthread_mutex_t	eat;
 	pthread_mutex_t	dead;
@@ -59,29 +61,25 @@ int					check_args(char **argv);
 
 /* init.c */
 int					init_mutexes(t_data *data);
-int					init_philos(t_data *data);
-int					init_program(t_data *data, int argc, char **argv);
-int					init_threads(t_data *data);
+void	init_philos(t_philo *philos, t_data *data, char **argv);
+int	init_program(t_data *data, t_philo *philos);
 
-/* routine.c - MAX */ 
-void				*routine(void *philo);
+/* routine.c */ 
 void				is_eating(t_philo *philo);
 void				is_sleeping(t_philo *philo);
 void				is_thinking(t_philo *philo);
 void				print_message(char *message, t_philo *philo, int id);
+void				*routine(void *arg);
+
 /* check.c */
-int					check_dead(t_philo *philo);
-int					check_eating(t_philo *philo);
-int					check_meals(t_philo *philo);
+int check_philosopher_death(t_philo *philos);
+int check_have_eaten(t_philo *philos);
+void *monitor_philosophers(void *arg);
 
 /* philos.c */
-int					detroy_threads(t_data *data);
 void				destroy_mutexes(t_data *data);
 int					stop_program(t_data *data);
 int					start_threads(t_data *data);
-
-/* EXTRAS */
-int					ft_atoi(char *str);
-int					get_time(void);
+int	detroy_threads(t_data *data);
 
 #endif

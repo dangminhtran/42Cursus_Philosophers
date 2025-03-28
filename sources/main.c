@@ -15,25 +15,18 @@
 int main(int argc, char **argv)
 {
     t_data data;
+    t_philo philos[PHILO_MAX];
 
     if (argc < 5 || argc > 6)
     {
         write(2, "Error: Wrong number of arguments\n", 33);
         return (1);
     }
-    if (check_args(argv))
+    if (check_args(argv) == 1)
         return (1);
-    data.philo = malloc(sizeof(t_philo) * ft_atoi(argv[1]));
-    data.philo->nb_philos = ft_atoi(argv[1]);
-    data.philo->time_to_die = ft_atoi(argv[2]);
-    data.philo->time_to_eat = ft_atoi(argv[3]);
-    data.philo->time_to_sleep = ft_atoi(argv[4]);
-    if (argv[5])
-        data.philo->nb_meals_to_eat = ft_atoi(argv[5]);
-    else
-        data.philo->nb_meals_to_eat = -1;
-    data.philo->start_time = get_time();
-    if (init_program(&data, argc, argv))
-        return (1);
+    init_program(&data, philos);
+    init_philos(philos, &data, argv);
+    start_threads(&data);
+    stop_program(&data);
     return (0);
 }

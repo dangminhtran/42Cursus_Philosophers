@@ -16,9 +16,11 @@ CC = cc
 
 CFLAGS= -Wall -Wextra -Werror -I${HEADER_DIR} -g
 
-SRCS_DIR = 	$(addprefix sources/, parsing.c init.c routine.c philos.c main.c)
+SRCS_DIR = 	$(addprefix sources/, parsing.c init.c routine.c check.c philos.c main.c) $(EXTRAS)
 
 SRCS_OBJ = ${SRCS_DIR:.c=.o}
+
+EXTRAS = $(addprefix extras/, ft_atoi.c get_time.c)
 
 HEADER_DIR=./includes/
 

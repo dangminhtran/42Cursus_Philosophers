@@ -12,57 +12,77 @@
 
 #include "philos.h"
 
-/**
- * @brief Function to check if the philosopher is dead
- * @param philo The philosopher
- * @return 0 if success, 1 if error
- */
-int	check_dead(t_philo *philo)
+int check_philosopher_death(t_philo *philos)
 {
-    if (philo->nb_meals_to_eat == 0)
+    int i;
+
+    i = 0;
+    while (i < philos[0].nb_philos)
     {
-        pthread_mutex_lock(philo->dead);
-        philo->is_dead = 1;
-        pthread_mutex_unlock(philo->dead);
-        return (1);
+        pthread_mutex_lock(philos[i].eat);
+        if (get_time() - philos[i].last_meal >= philos[i].time_to_die)
+        {
+            pthread_mutex_unlock(philos[i].eat);
+            print_message("died", &philos[i], philos[i].id);
+            
+            pthread_mutex_lock(philos[0].dead);
+            *philos[0].is_dead = 1;
+            pthread_mutex_unlock(philos[0].dead);
+            
+            return (1);
+        }
+        pthread_mutex_unlock(philos[i].eat);
+        i++;
     }
-    if (get_time() - philo->last_meal > philo->time_to_die)
+    return (0);
+}
+
+int check_have_eaten(t_philo *philos)
+{
+    int i;
+    int all_satisfied;
+
+    i = 0;
+    all_satisfied = 0;
+
+    if (philos[0].nb_meals_to_eat == -1)
+        return (0);
+
+    while (i < philos[0].nb_philos)
     {
-        pthread_mutex_lock(philo->dead);
-        philo->is_dead = 1;
-        pthread_mutex_unlock(philo->dead);
+        pthread_mutex_lock(philos[i].eat);
+        if (philos[i].meats_eaten >= philos[i].nb_meals_to_eat)
+            all_satisfied++;
+        pthread_mutex_unlock(philos[i].eat);
+        i++;
+    }
+
+    if (all_satisfied == philos[0].nb_philos)
+    {
+        pthread_mutex_lock(philos[0].dead);
+        *philos->is_dead = 1;
+        pthread_mutex_unlock(philos[0].dead);
         return (1);
     }
     return (0);
 }
 
-/**
- * @brief Function to check if the philosopher is eating
- * @param philo The philosopher
- * @return 0 if success, 1 if error
- */
-int	check_eating(t_philo *philo)
+void *monitor_philosophers(void *arg)
 {
-    pthread_mutex_lock(philo->eat);
-    if (get_time() - philo->last_meal > philo->time_to_eat)
-    {
-        philo->meats_eaten++;
-        philo->nb_meals_to_eat--;
-        pthread_mutex_unlock(philo->eat);
-        return (1);
-    }
-    pthread_mutex_unlock(philo->eat);
-    return (0);
-}
+    t_philo *philos;
+    
+    philos = (t_philo *)arg;
 
-/**
- * @brief Function that check if the number of meals to eat is reached
- * @param philo The philosopher
- * @return 0 if success, 1 if error
- */
-int	check_meals(t_philo *philo)
-{
-    if (philo->nb_meals_to_eat == 0)
-        return (1);
-    return (0);
+    while (1)
+    {
+        if (check_philosopher_death(philos) || check_have_eaten(philos))
+        {
+            pthread_mutex_lock(philos[0].dead);
+            *philos->is_dead = 1;
+            pthread_mutex_unlock(philos[0].dead);
+            break;
+        }
+        usleep(1000);
+    }
+    return (arg);
 }
