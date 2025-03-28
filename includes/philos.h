@@ -34,9 +34,9 @@ typedef struct s_philo
 	int				nb_meals_to_eat;
 	size_t			start_time;
 	size_t			last_meal;
+	int				*is_dead;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	int				*is_dead;
 	pthread_mutex_t	*eat;
 	pthread_mutex_t	*write;
 	pthread_mutex_t	*dead;
@@ -46,7 +46,7 @@ typedef struct s_philo
 typedef struct s_data
 {
 	t_philo			*philos;
-	pthread_mutex_t	forks[PHILO_MAX];
+	// pthread_mutex_t	forks[PHILO_MAX];
 	int	is_dead;
 	pthread_mutex_t	write;
 	pthread_mutex_t	eat;
@@ -61,7 +61,8 @@ int					check_args(char **argv);
 
 /* init.c */
 int					init_mutexes(t_data *data);
-void	init_philos(t_philo *philos, t_data *data, char **argv);
+void	init_philos(t_philo *philos, t_data *data, char **argv, pthread_mutex_t *forks);
+void	init_forks(pthread_mutex_t *forks, int philo_num);
 int	init_program(t_data *data, t_philo *philos);
 
 /* routine.c */ 
@@ -78,8 +79,8 @@ void *monitor_philosophers(void *arg);
 
 /* philos.c */
 void				destroy_mutexes(t_data *data);
-int					stop_program(t_data *data);
+int stop_program(t_data *data, pthread_mutex_t *forks);
 int					start_threads(t_data *data);
-int	detroy_threads(t_data *data);
+// int	detroy_threads(t_data *data);
 
 #endif

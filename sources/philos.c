@@ -12,19 +12,19 @@
 
 #include "philos.h"
 
-int	detroy_threads(t_data *data)
-{
-	int	i;
+// int	detroy_threads(t_data *data)
+// {
+// 	int	i;
 
-	i = 0;
-	while (i < data->philos->nb_philos)
-	{
-		pthread_mutex_destroy(data->philos[i].left_fork);
-		pthread_mutex_destroy(data->philos[i].right_fork);
-		i++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	while (i < data->philos->nb_philos)
+// 	{
+// 		pthread_mutex_destroy(data->philos[i].left_fork);
+// 		pthread_mutex_destroy(data->philos[i].right_fork);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 void	destroy_mutexes(t_data *data)
 {
@@ -33,17 +33,16 @@ void	destroy_mutexes(t_data *data)
 	pthread_mutex_destroy(&data->dead);
 }
 
-int stop_program(t_data *data)
+int stop_program(t_data *data, pthread_mutex_t *forks)
 {
-    int i;
+   int i;
     
-    i = 0;
-    while (i < data->philos->nb_philos)
+   i = 0;
+    while (i < data->philos[0].nb_philos)
     {
-        pthread_mutex_destroy(&data->forks[i]);
+        pthread_mutex_destroy(&forks[i]);
         i++;
     }
-    detroy_threads(data);
     destroy_mutexes(data);
     return (0);
 }

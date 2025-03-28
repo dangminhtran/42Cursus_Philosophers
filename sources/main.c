@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 {
     t_data data;
     t_philo philos[PHILO_MAX];
+    pthread_mutex_t	forks[PHILO_MAX];
 
     if (argc < 5 || argc > 6)
     {
@@ -25,8 +26,9 @@ int main(int argc, char **argv)
     if (check_args(argv) == 1)
         return (1);
     init_program(&data, philos);
-    init_philos(philos, &data, argv);
+    init_forks(forks, ft_atoi(argv[1]));
+    init_philos(philos, &data, argv, forks);
     start_threads(&data);
-    stop_program(&data);
+    stop_program(&data, forks);
     return (0);
 }
